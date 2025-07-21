@@ -45,10 +45,7 @@ const SlidderSection: React.FC = () => {
                 }}
               >
                 <img
-                  src={
-                    post.urlToImage ||
-                    "https://via.placeholder.com/800x450?text=No+Image"
-                  }
+                  src={post.urlToImage}
                   alt={post.title}
                   style={{
                     width: "100%",
