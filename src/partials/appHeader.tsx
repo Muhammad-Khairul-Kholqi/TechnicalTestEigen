@@ -7,12 +7,11 @@ const { Header } = Layout;
  
 const styles = { 
   header: { 
-    background: "#fff", 
+    background: "#0F0E14", 
     padding: "0 24px", 
     position: "fixed" as const, 
     zIndex: 1000, 
-    width: "100%", 
-    borderBottom: "1px solid #e8e8e8", 
+    width: "100%",  
     height: 64, 
     display: "flex", 
     justifyContent: "center", 
@@ -26,7 +25,7 @@ const styles = {
   logo: { 
     fontWeight: "bold", 
     fontSize: 20, 
-    color: "#000", 
+    color: "#fff", 
     fontFamily: "'Roboto Slab', serif", 
     flex: 1,
     textDecoration: "none",

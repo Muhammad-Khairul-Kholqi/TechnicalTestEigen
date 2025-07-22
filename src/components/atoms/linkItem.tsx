@@ -14,7 +14,7 @@ const LinkItem: React.FC<LinkItemProps> = ({ to, label }) => {
       style={{ 
         fontWeight: "500",
         textDecoration: "none", 
-        color: "#000", 
+        color: "#fff", 
         outline: "none", 
         border: "none", 
       }} 

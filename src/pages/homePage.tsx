@@ -1,16 +1,11 @@
 import React from "react";
-import { Row } from "antd";
 import MainLayout from "../layouts/mainLayout";
-import SlidderSection from "../components/sections/home/slidderSection";
-import LatestNewsSection from "../components/sections/home/latestNewsSection";
+import MainSection from "../components/sections/home/mainSection";
 
 const HomePage: React.FC = () => {
   return (
     <MainLayout>
-      <Row gutter={24}>
-        <SlidderSection />
-        <LatestNewsSection />
-      </Row>
+      <MainSection />
     </MainLayout>
   );
 };

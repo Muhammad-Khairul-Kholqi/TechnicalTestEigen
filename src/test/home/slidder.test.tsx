@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import SlidderSection from '../../components/sections/home/slidderSection';
+import SlidderSection from '../../components/molecules/popularNews';
 import * as fetchPopularNewsModule from '../../api/fetchPopularNews';
 
 jest.mock('../../api/fetchPopularNews', () => ({
