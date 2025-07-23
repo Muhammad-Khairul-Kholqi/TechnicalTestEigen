@@ -40,7 +40,7 @@ const AllCardNewsLists: React.FC = () => {
     const newsGridRef = useRef<HTMLDivElement>(null);
     const [error, setError] = useState(false);
     
-    const articlesPerPage = 8;
+    const articlesPerPage = 16;
 
     useEffect(() => {
         let isMounted = true; 
@@ -51,7 +51,7 @@ const AllCardNewsLists: React.FC = () => {
                 setError(false);
                 const data = await fetchAllNews();
                 if (isMounted) {
-                    setAllArticles(data.slice(0, 8));
+                    setAllArticles(data);
                 }
             } catch (error) {
                 if (isMounted) {

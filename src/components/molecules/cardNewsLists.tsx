@@ -37,7 +37,7 @@ const CardNewsLists: React.FC = () => {
             try {
                 const data = await fetchAllNews();
                 if (isMounted) {
-                    setArticles(data.slice(0, 8));
+                    setArticles(data.slice(0, 12));
                 }
             } catch (error) {
                 if (isMounted) {

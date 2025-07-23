@@ -12,7 +12,7 @@ export type Article = {
 
 export const fetchAllNews = async (): Promise<Article[]> => {
   const response = await fetch(
-    `https://newsapi.org/v2/top-headlines?category=technology&country=us&pageSize=10&apiKey=${NEWS_API_KEY}`
+    `https://newsapi.org/v2/top-headlines?country=us&pageSize=100&apiKey=${NEWS_API_KEY}`
   );
 
   const data = await response.json();
