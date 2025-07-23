@@ -21,8 +21,8 @@ const PopularNews: React.FC = () => {
   useEffect(() => {
     const loadNews = async () => {
       try {
-        const articles = await FetchPopularNews();
-        setFeaturedPosts(articles.slice(0, 3)); 
+        const data = await FetchPopularNews();
+        setFeaturedPosts(data.slice(0, 3)); 
       } catch (err) {
         console.error("Failed to load popular news:", err);
       } finally {
@@ -83,6 +83,7 @@ const PopularNews: React.FC = () => {
         <Col xs={24} sm={12} md={12}>
           <Link to={secondPost?.url} target="_blank" rel="noopener noreferrer">
             <Card
+              className="card-popular"
               style={{ borderRadius: 12, overflow: "hidden", border: "none", backgroundColor: "#000" }}
               bodyStyle={{ padding: 16 }}
               cover={
@@ -91,10 +92,10 @@ const PopularNews: React.FC = () => {
                   alt={secondPost?.title}
                   style={{ height: "180px", objectFit: "cover", borderRadius: 12 }}
                 />
-            }
+              }
             >
               <div>
-                <Title level={5} style={{ fontSize: 18, marginBottom: 8, color: "#fff" }}>{secondPost?.title}</Title>
+                <Title className="title" level={5} style={{ fontSize: 18, marginBottom: 8, color: "#fff" }}>{secondPost?.title}</Title>
                 <Paragraph type="secondary" ellipsis={{ rows: 2 }} style={{ fontSize: 15, margin: 0, color: "#fff" }}>
                   {secondPost?.description}
                 </Paragraph>
@@ -106,6 +107,7 @@ const PopularNews: React.FC = () => {
         <Col xs={24} sm={12} md={12}>
           <Link to={thirdPost?.url} target="_blank" rel="noopener noreferrer">
             <Card
+              className="card-popular"
               style={{ borderRadius: 12, overflow: "hidden", border: "none", backgroundColor: "#000" }}
               bodyStyle={{ padding: 16 }} 
               cover={
@@ -114,10 +116,10 @@ const PopularNews: React.FC = () => {
                   alt={thirdPost?.title}
                   style={{ height: "180px", objectFit: "cover", borderRadius: 12 }}
                 />
-            }
+              }
             >
               <div>
-                <Title level={5} style={{ fontSize: 18, marginBottom: 8, color: "#fff" }}>{thirdPost?.title}</Title>
+                <Title className="title" level={5} style={{ fontSize: 18, marginBottom: 8, color: "#fff" }}>{thirdPost?.title}</Title>
                 <Paragraph type="secondary" ellipsis={{ rows: 2 }} style={{ fontSize: 15, margin: 0, color: "#fff" }}>
                   {thirdPost?.description}
                 </Paragraph>
@@ -126,6 +128,22 @@ const PopularNews: React.FC = () => {
           </Link>
         </Col>
       </Row>
+      <style>
+        {`
+            .card-popular {
+                transition: transform 0.3s ease;
+            }
+
+            .card-popular:hover .title {
+                  text-decoration: underline;
+                  text-decoration-color: white;
+            }
+
+            .card-popular:hover {
+                transform: scale(1.05);
+            }
+        `}
+      </style>
     </Col>
   );
 };

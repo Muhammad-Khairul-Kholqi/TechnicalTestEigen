@@ -116,7 +116,7 @@ const LatestNews = () => {
 
       <style>
         {`
-          .hover-title:hover {
+          .news-card:hover .hover-title {
             text-decoration: underline;
           }
           

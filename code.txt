@@ -1,269 +1,94 @@
-import React, { useState, useEffect } from "react";
-import MainLayout from "../layouts/mainLayout";
+import React, { useEffect, useState } from "react";
+import { fetchAllNews } from "../../api/fetchAllNews";
+import { Card, Typography, Row, Col, Tag } from "antd";
+import { CalendarOutlined } from "@ant-design/icons";
+import CardNewsSkeleton from "./CardNewsSkeleton";
 
-interface Article {
-  source: {
-    id: string | null;
-    name: string;
-  };
-  author: string | null;
-  title: string;
-  description: string | null;
-  url: string;
-  urlToImage: string | null;
-  publishedAt: string;
-  content: string | null;
-}
+const { Title, Text, Paragraph } = Typography;
 
-interface NewsResponse {
-  status: string;
-  totalResults: number;
-  articles: Article[];
-}
-
-const HomePage: React.FC = () => {
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const API_KEY = "51e0fcea504440d2abe181a2e309ae11";
-  const BASE_URL = "https://newsapi.org/v2";
-
-  // Fungsi untuk fetch berita
-  const fetchNews = async (endpoint: string, params: Record<string, string> = {}) => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const queryParams = new URLSearchParams({
-        apiKey: API_KEY,
-        ...params
-      });
-
-      const response = await fetch(`${BASE_URL}/${endpoint}?${queryParams}`);
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data: NewsResponse = await response.json();
-      
-      if (data.status === 'ok') {
-        setArticles(data.articles);
-      } else {
-        throw new Error('Failed to fetch news');
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
-      console.error('Error fetching news:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Load berita saat komponen pertama kali dimuat
-  useEffect(() => {
-    // Contoh: Get top headlines dari Indonesia
-    fetchNews('top-headlines', {
-      country: 'id', // Indonesia
-      pageSize: '10'
-    });
-  }, []);
-
-  // Fungsi untuk mencari berita berdasarkan kata kunci
-  const searchNews = (query: string) => {
-    fetchNews('everything', {
-      q: query,
-      language: 'id', // Bahasa Indonesia
-      sortBy: 'publishedAt',
-      pageSize: '10'
-    });
-  };
-
-  // Fungsi untuk get berita berdasarkan kategori
-  const getNewsByCategory = (category: string) => {
-    fetchNews('top-headlines', {
-      country: 'id',
-      category: category,
-      pageSize: '10'
-    });
-  };
-
-  return (
-    <MainLayout>
-      <div className="p-6">
-        <h1 className="text-3xl font-bold mb-6">Berita Terkini</h1>
-        
-        {/* Controls untuk filter berita */}
-        <div className="mb-6 flex gap-4 flex-wrap">
-          <button
-            onClick={() => fetchNews('top-headlines', { country: 'id', pageSize: '10' })}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            Top Headlines
-          </button>
-          
-          <button
-            onClick={() => getNewsByCategory('technology')}
-            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-          >
-            Teknologi
-          </button>
-          
-          <button
-            onClick={() => getNewsByCategory('business')}
-            className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
-          >
-            Bisnis
-          </button>
-          
-          <button
-            onClick={() => getNewsByCategory('sports')}
-            className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600"
-          >
-            Olahraga
-          </button>
-          
-          <button
-            onClick={() => searchNews('politik')}
-            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-          >
-            Politik
-          </button>
-        </div>
-
-        {/* Search input */}
-        <div className="mb-6">
-          <input
-            type="text"
-            placeholder="Cari berita..."
-            className="px-4 py-2 border border-gray-300 rounded-l-lg w-64"
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                const target = e.target as HTMLInputElement;
-                if (target.value.trim()) {
-                  searchNews(target.value.trim());
-                }
-              }
-            }}
-          />
-          <button
-            onClick={() => {
-              const input = document.querySelector('input[type="text"]') as HTMLInputElement;
-              if (input && input.value.trim()) {
-                searchNews(input.value.trim());
-              }
-            }}
-            className="px-4 py-2 bg-gray-500 text-white rounded-r-lg hover:bg-gray-600"
-          >
-            Cari
-          </button>
-        </div>
-
-        {/* Loading state */}
-        {loading && (
-          <div className="text-center py-8">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-            <p className="mt-2">Memuat berita...</p>
-          </div>
-        )}
-
-        {/* Error state */}
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            Error: {error}
-          </div>
-        )}
-
-        {/* Articles list */}
-        {!loading && !error && articles.length > 0 && (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {articles.map((article, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden">
-                {article.urlToImage && (
-                  <img
-                    src={article.urlToImage}
-                    alt={article.title}
-                    className="w-full h-48 object-cover"
-                  />
-                )}
-                <div className="p-4">
-                  <h2 className="font-bold text-lg mb-2 line-clamp-2">
-                    {article.title}
-                  </h2>
-                  
-                  {/* Source dan Author */}
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-gray-600 text-sm font-medium">
-                      {article.source.name}
-                    </p>
-                    {article.author && (
-                      <p className="text-gray-500 text-xs">
-                        oleh {article.author}
-                      </p>
-                    )}
-                  </div>
-                  
-                  {/* Description */}
-                  {article.description && (
-                    <p className="text-gray-700 mb-3 line-clamp-3">
-                      {article.description}
-                    </p>
-                  )}
-                  
-                  {/* Content preview jika ada */}
-                  {article.content && article.content !== article.description && (
-                    <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                      {article.content.replace(/\[\+\d+\s+chars\]/, '...')}
-                    </p>
-                  )}
-                  
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs text-gray-500">
-                      {new Date(article.publishedAt).toLocaleDateString('id-ID', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
-                    </span>
-                    <a
-                      href={article.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-500 hover:text-blue-700 text-sm font-medium"
-                    >
-                      Baca Selengkapnya
-                    </a>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* No articles found */}
-        {!loading && !error && articles.length === 0 && (
-          <div className="text-center py-8 text-gray-500">
-            Tidak ada berita ditemukan.
-          </div>
-        )}
-
-        {/* API Info */}
-        <div className="mt-8 p-4 bg-gray-100 rounded-lg">
-          <h3 className="font-bold mb-2">Parameter NewsAPI yang Tersedia:</h3>
-          <div className="text-sm text-gray-700 space-y-1">
-            <p><strong>Top Headlines:</strong> country, category, sources, q, pageSize, page</p>
-            <p><strong>Everything:</strong> q, sources, domains, from, to, language, sortBy, pageSize, page</p>
-            <p><strong>Kategori:</strong> business, entertainment, general, health, science, sports, technology</p>
-            <p><strong>Country codes:</strong> id (Indonesia), us, gb, au, ca, dll.</p>
-            <p><strong>Language codes:</strong> id (Indonesian), en, ar, de, es, fr, dll.</p>
-          </div>
-        </div>
-      </div>
-    </MainLayout>
-  );
+type Article = {
+  url: string;
+  urlToImage?: string;
+  publishedAt: string;
+  title: string;
+  description?: string;
+  author?: string;
 };
 
-export default HomePage;
+const dummyCategory = "Technology";
+
+const formatDate = (dateStr: string) => {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString("id-ID", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+};
+
+const CardNewsLists: React.FC = () => {
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchAllNews();
+        setArticles(data.slice(0, 8));
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) return <CardNewsSkeleton />;
+
+  return (
+    <Row gutter={[16, 16]}>
+      {articles.map((article, idx) => (
+        <Col xs={24} sm={12} md={8} lg={6} key={idx}>
+          <Card
+            hoverable
+            cover={
+              <div style={{ position: "relative" }}>
+                <img
+                  src={article.urlToImage || "https://placehold.co/400"}
+                  alt="News"
+                  style={{
+                    width: "100%",
+                    height: "200px",
+                    objectFit: "cover",
+                    borderRadius: "8px",
+                  }}
+                />
+                <Tag
+                  color="orange"
+                  style={{ position: "absolute", top: 10, left: 10 }}
+                >
+                  {dummyCategory}
+                </Tag>
+              </div>
+            }
+            bodyStyle={{ padding: 0, paddingTop: 12 }}
+          >
+            <div style={{ marginTop: 8, padding: "0 16px" }}>
+              <Paragraph ellipsis={{ rows: 2 }}>
+                <strong>{article.title}</strong>
+              </Paragraph>
+              <Text type="secondary" style={{ fontSize: 12 }}>
+                <CalendarOutlined style={{ marginRight: 6 }} />
+                {formatDate(article.publishedAt)}
+              </Text>
+            </div>
+          </Card>
+        </Col>
+      ))}
+    </Row>
+  );
+};
+
+export default CardNewsLists;

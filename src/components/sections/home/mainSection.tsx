@@ -1,19 +1,19 @@
 import PopularNews from "../../molecules/popularNews";
 import LatestNews from "../../molecules/latestNews";
+import { Row } from "antd";
 
 const styles = {
   contentWrapper: {
     display: "flex",
     justifyContent: "center",
     padding: "100px 24px 24px",
-    background: "red",
+    background: "#000",
   },
   contentInner: {
     width: "100%",
     maxWidth: 1200,
   },
 };
-import { Row } from "antd";
 
 const MainSection: React.FC = () => {
     return (
