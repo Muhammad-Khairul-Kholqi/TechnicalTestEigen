@@ -38,23 +38,38 @@ const AllCardNewsLists: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const newsGridRef = useRef<HTMLDivElement>(null);
+    const [error, setError] = useState(false);
     
     const articlesPerPage = 8;
 
     useEffect(() => {
+        let isMounted = true; 
+        
         const fetchData = async () => {
             try {
+                setLoading(true);
+                setError(false);
                 const data = await fetchAllNews();
-                setAllArticles(data);
-                setFilteredArticles(data);
+                if (isMounted) {
+                    setAllArticles(data.slice(0, 8));
+                }
             } catch (error) {
-                console.error(error);
+                if (isMounted) {
+                    console.error(error);
+                    setError(true);
+                }
             } finally {
-                setLoading(false);
+                if (isMounted) {
+                    setLoading(false);
+                }
             }
         };
 
         fetchData();
+
+        return () => {
+            isMounted = false;
+        };
     }, []);
 
     useEffect(() => {
@@ -99,7 +114,17 @@ const AllCardNewsLists: React.FC = () => {
         setDropdownOpen(open);
     };
 
-    if (loading) return <CardNewsLoading />;
+    if (loading) {
+        return <CardNewsLoading />;
+    }
+
+    if (error) {
+        return (
+            <div style={{ textAlign: 'center', padding: '40px' }}>
+                <Text strong style={{ color: 'white' }}>Gagal memuat berita. Silakan coba lagi.</Text>
+            </div>
+        );
+    }
 
     return (
         <div>
