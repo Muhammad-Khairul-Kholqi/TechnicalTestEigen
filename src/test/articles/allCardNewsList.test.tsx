@@ -79,7 +79,6 @@ describe("AllCardNewsLists Component", () => {
 
     renderComponent();
 
-    // Pastikan loading selesai terlebih dahulu
     await waitFor(() => {
       expect(screen.queryByTestId("loading")).not.toBeInTheDocument();
     });

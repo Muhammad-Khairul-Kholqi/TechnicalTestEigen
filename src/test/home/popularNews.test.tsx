@@ -132,7 +132,7 @@ describe('PopularNews Component', () => {
 
   it('menangani artikel tanpa gambar dengan benar', async () => {
     const articlesWithMissingImage = [...mockArticles];
-    articlesWithMissingImage[1].urlToImage = undefined;
+    articlesWithMissingImage[1].urlToImage = undefined as any;
     
     (FetchPopularNews as jest.Mock).mockResolvedValue(articlesWithMissingImage);
 
