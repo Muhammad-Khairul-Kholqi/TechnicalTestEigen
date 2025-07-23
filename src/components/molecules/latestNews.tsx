@@ -58,16 +58,34 @@ const LatestNews = () => {
                 >
                   <Row gutter={12} align="middle">
                     <Col span={8}>
-                      <img
-                        src={item.urlToImage}
-                        alt="news"
-                        style={{ 
-                          width: "100%", 
-                          borderRadius: 8, 
-                          height: 127, 
-                          objectFit: "cover",  
-                        }}
-                      />
+                      {item.urlToImage ? (
+                        <img
+                          src={item.urlToImage}
+                          alt="news"
+                          style={{
+                            width: "100%",
+                            borderRadius: 8,
+                            height: 127,
+                            objectFit: "cover",
+                          }}
+                        />
+                      ) : (
+                        <div
+                          style={{
+                            width: "100%",
+                            height: 127,
+                            borderRadius: 8,
+                            backgroundColor: "#444",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            color: "#fff",
+                            fontSize: 12,
+                          }}
+                        >
+                          No Image
+                        </div>
+                      )}
                     </Col>
 
                     <Col span={16}>

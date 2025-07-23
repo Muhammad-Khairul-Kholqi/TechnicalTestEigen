@@ -1,3 +1,5 @@
+import { NEWS_API_KEY } from '../config/apiKey';
+
 export type Article = {
   url: string;
   urlToImage?: string;
@@ -6,10 +8,8 @@ export type Article = {
 };
 
 export const fetchLatestNews = async (): Promise<Article[]> => {
-  const API_KEY = import.meta.env?.VITE_NEWS_API_KEY || process.env.VITE_NEWS_API_KEY;
-
   const response = await fetch(
-    `https://newsapi.org/v2/top-headlines?sources=the-verge&pageSize=5&apiKey=${API_KEY}`
+    `https://newsapi.org/v2/top-headlines?sources=the-verge&pageSize=5&apiKey=${NEWS_API_KEY}`
   );
 
   const data = await response.json();
