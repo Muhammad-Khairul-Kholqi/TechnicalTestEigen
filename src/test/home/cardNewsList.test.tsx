@@ -1,22 +1,22 @@
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
-import LatestNews from "../../components/molecules/latestNews";
-import * as fetchLatestNewsModule from "../../api/fetchLatestNews";
+import CardNewsLists from "../../components/molecules/cardNewsLists";
 import { BrowserRouter as Router } from 'react-router-dom';
+import { fetchAllNews } from '../../api/fetchAllNews';
 
-jest.mock("../../components/loading/latestLoading", () => () => (
-  <div data-testid="loading">Loading...</div>
-));
-
-jest.mock("../../config/apiKey", () => ({
-  NEWS_API_KEY: "test-api-key",
+jest.mock("../../api/fetchAllNews", () => ({
+  __esModule: true,
+  fetchAllNews: jest.fn(), 
 }));
 
-jest.mock("../../api/fetchLatestNews");
+jest.mock("../../components/loading/cardNewsLoading.tsx", () => () => (
+  <div data-testid="loading">Loading...</div>
+));
 
 beforeAll(() => {
   jest.spyOn(console, "error").mockImplementation(() => {});
 });
+
 
 const mockArticles = [
   {
@@ -38,17 +38,17 @@ const mockArticles = [
 const renderComponent = () =>
   render(
     <Router>
-      <LatestNews />
+      <CardNewsLists />
     </Router>
   );
 
-describe("LatestNews Component", () => {
-  afterEach(() => {
-    jest.clearAllMocks();
+describe("CardNewsLists Component", () => {
+  beforeEach(() => {
+    (fetchAllNews as jest.Mock).mockReset();
   });
 
-  it("menampilkan loading state saat data dimuat", async () => {
-    (fetchLatestNewsModule.fetchLatestNews as jest.Mock).mockImplementation(
+  it("menampilkan loading state saat data dimuat", () => {
+    (fetchAllNews as jest.Mock).mockImplementation(
       () => new Promise(() => {})
     );
 
@@ -57,7 +57,7 @@ describe("LatestNews Component", () => {
   });
 
   it("menampilkan artikel setelah berhasil di-fetch", async () => {
-    (fetchLatestNewsModule.fetchLatestNews as jest.Mock).mockResolvedValue(mockArticles);
+    (fetchAllNews as jest.Mock).mockResolvedValue(mockArticles);
 
     renderComponent();
 
@@ -68,16 +68,12 @@ describe("LatestNews Component", () => {
   });
 
   it('menampilkan error state ketika fetch gagal', async () => {
-    (fetchLatestNewsModule.fetchLatestNews as jest.Mock).mockRejectedValue(new Error('API error'));
+    (fetchAllNews as jest.Mock).mockRejectedValue(new Error('API error'));
 
-    render(
-      <Router>
-        <LatestNews />
-      </Router>
-    );
+    renderComponent();
 
     await waitFor(() => {
-      expect(screen.queryByTestId('loading-indicator')).not.toBeInTheDocument();
+      expect(screen.getByText("Gagal memuat berita. Silakan coba lagi.")).toBeInTheDocument();
     });
   });
 
@@ -89,14 +85,14 @@ describe("LatestNews Component", () => {
       },
     ];
 
-    (fetchLatestNewsModule.fetchLatestNews as jest.Mock).mockResolvedValue(mockWithoutImage);
+    (fetchAllNews as jest.Mock).mockResolvedValue(mockWithoutImage);
 
     renderComponent();
 
     await waitFor(() => {
       expect(screen.getByText("First Article")).toBeInTheDocument();
-      const images = screen.queryAllByRole("img");
-      expect(images.length).toBe(0); 
+      const images = screen.getAllByRole("img");
+      expect(images[0]).toHaveAttribute("src", "https://placehold.co/400");
     });
   });
 });

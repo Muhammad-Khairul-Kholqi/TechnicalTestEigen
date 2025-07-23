@@ -1,7 +1,6 @@
 import { Card, Row, Col, Skeleton } from 'antd';
 
 const CardNewsLoading = () => {
-  // Generate 8 loading cards
   const loadingCards = Array.from({ length: 8 }, (_, index) => (
     <Col xs={24} sm={12} md={8} lg={6} key={index}>
       <Card
