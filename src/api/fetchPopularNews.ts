@@ -8,7 +8,7 @@ export type Post = {
 
 export const FetchPopularNews = async (): Promise<Post[]> => {
   const response = await fetch(
-    `https://newsapi.org/v2/everything?q=trending&sortBy=popularity&pageSize=5&apiKey=${NEWS_API_KEY}`
+    `https://newsapi.org/v2/top-headlines?category=technology&country=us&pageSize=10&apiKey=${NEWS_API_KEY}`
   );
 
   const data = await response.json();
