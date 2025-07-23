@@ -3,7 +3,7 @@ import { Skeleton, Col, Row } from "antd";
 
 const PopularLoading: React.FC = () => {
   return (
-    <div>
+    <div role="progressbar">
         <div
             style={{
                 width: "100%",

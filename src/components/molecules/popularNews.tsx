@@ -17,14 +17,16 @@ type Article = {
 const PopularNews: React.FC = () => {
   const [featuredPosts, setFeaturedPosts] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false); 
 
   useEffect(() => {
     const loadNews = async () => {
       try {
         const data = await FetchPopularNews();
-        setFeaturedPosts(data.slice(0, 3)); 
+        setFeaturedPosts(data.slice(0, 3));
       } catch (err) {
         console.error("Failed to load popular news:", err);
+        setError(true); 
       } finally {
         setLoading(false);
       }
@@ -41,7 +43,16 @@ const PopularNews: React.FC = () => {
     );
   }
 
+  if (error) {
+    return <div>Terjadi kesalahan saat mengambil data.</div>;
+  }
+
+  if (!featuredPosts.length) {
+    return <PopularLoading />;
+  }
+
   const [firstPost, secondPost, thirdPost] = featuredPosts;
+  if (!firstPost) return null; 
 
   return (
     <Col xs={24} md={16}>
@@ -50,8 +61,8 @@ const PopularNews: React.FC = () => {
           <Link to={firstPost?.url} target="_blank" rel="noopener noreferrer">
             <div style={{ position: "relative", borderRadius: 12, overflow: "hidden", height: 350 }}>
               <img
-                  src={firstPost?.urlToImage}
-                  alt={firstPost?.title}
+                  src={firstPost.urlToImage}
+                  alt={firstPost.title}
                   style={{
                     width: "100%",
                     height: "350px",
@@ -83,15 +94,17 @@ const PopularNews: React.FC = () => {
         <Col xs={24} sm={12} md={12}>
           <Link to={secondPost?.url} target="_blank" rel="noopener noreferrer">
             <Card
+              role="article"
               className="card-popular"
               style={{ borderRadius: 12, overflow: "hidden", border: "none", backgroundColor: "#000" }}
-              bodyStyle={{ padding: 16 }}
               cover={
-                <img
-                  src={secondPost?.urlToImage}
-                  alt={secondPost?.title}
-                  style={{ height: "180px", objectFit: "cover", borderRadius: 12 }}
-                />
+                secondPost?.urlToImage ? (
+                  <img
+                    src={secondPost.urlToImage}
+                    alt={secondPost.title}
+                    style={{ height: "180px", objectFit: "cover", borderRadius: 12 }}
+                  />
+                ) : null
               }
             >
               <div>
@@ -107,15 +120,17 @@ const PopularNews: React.FC = () => {
         <Col xs={24} sm={12} md={12}>
           <Link to={thirdPost?.url} target="_blank" rel="noopener noreferrer">
             <Card
+              role="article"
               className="card-popular"
               style={{ borderRadius: 12, overflow: "hidden", border: "none", backgroundColor: "#000" }}
-              bodyStyle={{ padding: 16 }} 
               cover={
-                <img
-                  src={thirdPost?.urlToImage}
-                  alt={thirdPost?.title}
-                  style={{ height: "180px", objectFit: "cover", borderRadius: 12 }}
-                />
+                thirdPost?.urlToImage ? (
+                  <img
+                    src={thirdPost.urlToImage}
+                    alt={thirdPost.title}
+                    style={{ height: "180px", objectFit: "cover", borderRadius: 12 }}
+                  />
+                ) : null
               }
             >
               <div>
