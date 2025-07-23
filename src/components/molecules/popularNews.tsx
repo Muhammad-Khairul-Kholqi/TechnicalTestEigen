@@ -59,7 +59,7 @@ const PopularNews: React.FC = () => {
     return <PopularLoading />;
   }
 
-  const [firstPost, secondPost, thirdPost] = featuredPosts;
+  const [firstPost, ...remainingPosts] = featuredPosts;
   if (!firstPost) return null;
 
   return (
@@ -110,48 +110,50 @@ const PopularNews: React.FC = () => {
           </a>
         </Col>
 
-        {[secondPost, thirdPost].map((post, index) => (
-          <Col key={index} xs={24} sm={12} md={12}>
-            <a href={post.url} target="_blank" rel="noopener noreferrer">
-              <Card
-                role="article"
-                className="card-popular"
-                style={{
-                  borderRadius: 12,
-                  overflow: "hidden",
-                  border: "none",
-                  backgroundColor: "#000",
-                }}
-                cover={
-                  post.urlToImage ? (
-                    <img
-                      src={post.urlToImage}
-                      alt={post.title || "News Image"}
-                      style={{ height: "180px", objectFit: "cover", borderRadius: 12 }}
-                    />
-                  ) : null
-                }
-              >
-                <div>
-                  <Title
-                    className="title"
-                    level={5}
-                    style={{ fontSize: 18, marginBottom: 8, color: "#fff" }}
-                  >
-                    {post.title}
-                  </Title>
-                  <Paragraph
-                    type="secondary"
-                    ellipsis={{ rows: 2 }}
-                    style={{ fontSize: 15, margin: 0, color: "#fff" }}
-                  >
-                    {post.description}
-                  </Paragraph>
-                </div>
-              </Card>
-            </a>
-          </Col>
-        ))}
+        {remainingPosts.map((post, index) => 
+          post ? (
+            <Col key={index} xs={24} sm={12} md={12}>
+              <a href={post.url} target="_blank" rel="noopener noreferrer">
+                <Card
+                  role="article"
+                  className="card-popular"
+                  style={{
+                    borderRadius: 12,
+                    overflow: "hidden",
+                    border: "none",
+                    backgroundColor: "#000",
+                  }}
+                  cover={
+                    post.urlToImage ? (
+                      <img
+                        src={post.urlToImage}
+                        alt={post.title || "News Image"}
+                        style={{ height: "180px", objectFit: "cover", borderRadius: 12 }}
+                      />
+                    ) : null
+                  }
+                >
+                  <div>
+                    <Title
+                      className="title"
+                      level={5}
+                      style={{ fontSize: 18, marginBottom: 8, color: "#fff" }}
+                    >
+                      {post.title}
+                    </Title>
+                    <Paragraph
+                      type="secondary"
+                      ellipsis={{ rows: 2 }}
+                      style={{ fontSize: 15, margin: 0, color: "#fff" }}
+                    >
+                      {post.description}
+                    </Paragraph>
+                  </div>
+                </Card>
+              </a>
+            </Col>
+          ) : null
+        )}
       </Row>
 
       <style>
